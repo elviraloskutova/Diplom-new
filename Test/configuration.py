@@ -1,0 +1,4 @@
+URL_1 = "https://www.chitai-gorod.ru/"
+
+token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3VzZXItcmlnaHQiLCJzdWIiOjIxMDg2NjYwLCJpYXQiOjE3Mjg0ODA3NjUsImV4cCI6MTcyODQ4NDM2NSwidHlwZSI6MjB9.kYnJUvnxaVcCwUsghd7NUegiD4jTQ7FmQ7LQgKReXKo"
+
