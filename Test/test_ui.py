@@ -4,7 +4,10 @@ from selenium.webdriver.common.by import By
 from Test.configuration import *
 from selenium.webdriver.common.action_chains import ActionChains
 from time import sleep
+import allure
 
+
+@allure.step("Полжить книгу в корзину")
 def test_buy_book(chrome_browser):
     chrome_browser.get(URL_1)
 
@@ -24,6 +27,7 @@ def test_buy_book(chrome_browser):
     chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
     sleep(5)
 
+@allure.step("Проверить товар в корзине")
 def test_buy_book_verify(chrome_browser):
     chrome_browser.get(URL_1)
     """Поиск по Фамилии"""
@@ -50,7 +54,7 @@ def test_buy_book_verify(chrome_browser):
     chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
     sleep(5)
 
-
+@allure.step("Удаление книги из корзины")
 def test_book_delete(chrome_browser):
     chrome_browser.get(URL_1)
     """Поиск по фамилии"""
@@ -81,6 +85,7 @@ def test_book_delete(chrome_browser):
     chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/div[2]/span[1]').click()
     sleep(5)
 
+@allure.step("Восстановление книги в корзине после удаления")
 def test_cart_recovery(chrome_browser):
     chrome_browser.get(URL_1)
     """Поиск по фамилии автора"""
@@ -115,6 +120,7 @@ def test_cart_recovery(chrome_browser):
     chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/section[1]/div[1]/div[2]').click()
     sleep(5)
 
+@allure.step("Оформление покупки книги")
 def test_book_placing(chrome_browser):
     chrome_browser.get(URL_1)
     """Поиск по фамилии автора"""

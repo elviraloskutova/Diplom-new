@@ -17,7 +17,6 @@ class MainPage:
         """
         self.driver = driver
 
-    @allure.step("Перейти на сайт") 
     def go_to_site(self):
         return self.driver.get(self.base_url)
 

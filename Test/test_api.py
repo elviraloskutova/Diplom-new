@@ -1,7 +1,10 @@
 import requests
 import pytest
 from Test.configuration import token
+import allure
 
+
+@allure.step("Изменить личные данные с неверным токеном")
 def test_update_personal_data_negative(chrome_browser):
     url = "https://web-gate.chitai-gorod.ru/api/v1/profile/personal-data"
     headers = {
@@ -14,7 +17,7 @@ def test_update_personal_data_negative(chrome_browser):
     }
     data = {
         "lastName": "Васильева",
-        "firstName": "Эльвира",
+        "firstName": "ЭльвираЛ",
         "middleName": "",
         "birthday": "1988-06-30",
         "phone": "79091371749",
@@ -27,6 +30,7 @@ def test_update_personal_data_negative(chrome_browser):
 
     assert response.status_code == 401, "Status code should be 401"
 
+@allure.step("Изменить личные данные с верным токеном")
 def test_update_personal_data_positive(chrome_browser):
     url = "https://web-gate.chitai-gorod.ru/api/v1/profile/personal-data"
     headers = {
@@ -52,6 +56,7 @@ def test_update_personal_data_positive(chrome_browser):
 
     assert response.status_code == 200, "Status code should be 200 OK"
 
+@allure.step("Поиск книг по автору")
 def test_search_author(chrome_browser):
     url = "https://web-gate.chitai-gorod.ru/api/v2/search/results"
     headers = {
@@ -71,6 +76,7 @@ def test_search_author(chrome_browser):
 
     assert response.status_code == 204, "Status code should be 204 OK"
 
+@allure.step("Изменить личные данные фамилии и имя")
 def test_update_personal_data_positive(chrome_browser):
     url = "https://web-gate.chitai-gorod.ru/api/v1/profile/personal-data"
     headers = {
@@ -82,8 +88,8 @@ def test_update_personal_data_positive(chrome_browser):
         "referer": "https://www.chitai-gorod.ru"
     }
     data = {
-        "lastName": "Васильева",
-        "firstName": "ЭльвираЛ",
+        "lastName": "Лоскутова",
+        "firstName": "Эльвира",
         "middleName": "",
         "birthday": "1988-06-30",
         "phone": "79091371749",
@@ -96,6 +102,7 @@ def test_update_personal_data_positive(chrome_browser):
 
     assert response.status_code == 200, "Status code should be 200 OK"
 
+@allure.step("Добавление товара в корзину")
 def test_add_basket(chrome_browser):
     url = "https://web-gate.chitai-gorod.ru/api/v1/cart/product"
     headers = {
@@ -118,6 +125,7 @@ def test_add_basket(chrome_browser):
 
     assert response.status_code == 200, "Status code should be 200 OK"
 
+@allure.step("Очищение корзины")
 def test_clear_basket(chrome_browser):
     url = "https://web-gate.chitai-gorod.ru/api/v1/cart"
     headers = {
