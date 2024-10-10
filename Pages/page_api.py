@@ -1,146 +1,42 @@
-import allure
 import requests
-import pytest
-from Test.configuration import token
 
-class ApiChitaiGorod:
-    """
-    Базовый класс для API Читай-город
-    """
+class ChitaiGorodAPI:
+    base_url = "https://web-gate.chitai-gorod.ru"
 
-    def test_update_personal_data_negative(chrome_browser):
-        """Авторизация с недействительным токеном"""
-        url = "https://web-gate.chitai-gorod.ru/api/v1/profile/personal-data"
-        headers = {
-            "accept": "application/json, text/plain, */*",
-            "accept-language": "ru,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7",
-            "authorization": "token=Bearer%20eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3VzZXItcmlnaHQiLCJzdWIiOjIxMDg2NjYwLCJpYXQiOjE3Mjc4ODYxNDYsImV4cCI6MTcyNzg4OTc0NiwidHlwZSI6MjB9.UIk1tIBDZULsvhqVL6yJ5l8L0w75fScZA3Cka_3EZFQ",
-            "content-type": "application/json",
-            "origin": "https://www.chitai-gorod.ru",
-            "referer": "https://www.chitai-gorod.ru/"
-        }
-        data = {
-            "lastName": "Васильева",
-            "firstName": "Эльвира",
-            "middleName": "",
-            "birthday": "1988-06-30",
-            "phone": "79091371749",
-            "email": "elviraloskutova8@gmail.com",
-            "phoneCountry": ""
-        }
-
-        response = requests.patch(url, headers=headers, json=data)
-        response_data = response.json()
-
-        assert response.status_code == 401, "Status code should be 401"
-
-    def test_update_personal_data_positive(chrome_browser):
-        """Авторизация с действительным токеном"""
-        url = "https://web-gate.chitai-gorod.ru/api/v1/profile/personal-data"
-        headers = {
+    def __init__(self, token):
+        self.headers = {
             "accept": "application/json, text/plain, */*",
             "accept-language": "ru,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7",
             "authorization": token,
             "content-type": "application/json",
             "origin": "https://www.chitai-gorod.ru",
             "referer": "https://www.chitai-gorod.ru/"
-        }
-        data = {
-            "lastName": "Васильева",
-            "firstName": "ЭльвираЛ",
-            "middleName": "",
-            "birthday": "1988-06-30",
-            "phone": "79091371749",
-            "email": "elviraloskutova8@gmail.com",
-            "phoneCountry": ""
-        }
-
-        response = requests.patch(url, headers=headers, json=data)
-        response_data = response.json()
-
-        assert response.status_code == 200, "Status code should be 200 OK"
-
-    def test_search_author(chrome_browser):
-        """Поиск книги по фамилии"""
-        url = "https://web-gate.chitai-gorod.ru/api/v2/search/results"
-        headers = {
-            "accept": "application/json, text/plain, */*",
-            "accept-language": "ru,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7",
-            "authorization": token,
-            "content-type": "application/json",
-            "origin": "https://www.chitai-gorod.ru",
-            "referer": "https://www.chitai-gorod.ru/"
-        }
-        data = {
-            "searchPhrase": "пушкин",
-            "resultCount": 2463
-        }
-
-        response = requests.post(url, headers=headers, json=data)
-
-        assert response.status_code == 204, "Status code should be 204 OK"
-
-    def test_update_personal_data_positive(chrome_browser):
-        """Редактирование личных данных"""
-        url = "https://web-gate.chitai-gorod.ru/api/v1/profile/personal-data"
-        headers = {
-            "accept": "application/json, text/plain, */*",
-            "accept-language": "ru,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7",
-            "authorization": token,
-            "content-type": "application/json",
-            "origin": "https://www.chitai-gorod.ru",
-            "referer": "https://www.chitai-gorod.ru/"
-        }
-        data = {
-            "lastName": "Васильева",
-            "firstName": "ЭльвираЛ",
-            "middleName": "",
-            "birthday": "1988-06-30",
-            "phone": "79091371749",
-            "email": "elviraloskutova8@gmail.com",
-            "phoneCountry": ""
-        }
-
-        response = requests.patch(url, headers=headers, json=data)
-        response_data = response.json()
-
-        assert response.status_code == 200, "Status code should be 200 OK"
-
-    def test_add_basket(chrome_browser):
-        """Добавление товара в корзину"""
-        url = "https://web-gate.chitai-gorod.ru/api/v1/cart/product"
-        headers = {
-            "accept": "application/json, text/plain, */*",
-            "accept-language": "ru,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7",
-            "authorization": token,
-            "content-type": "application/json",
-            "origin": "https://www.chitai-gorod.ru",
-            "referer": "https://www.chitai-gorod.ru/"
-        }
-        data = {
-            "id": 2886336,
-            "adData": {
-            "item_list_name": "search",
-            "product_shelf": ""
             }
-        }
 
-        response = requests.post(url, headers=headers, json=data)
+    def update_personal_data(self, data):
+        url = f"{self.base_url}/api/v1/profile/personal-data"
+        response = requests.patch(url, headers=self.headers, json=data)
+        return response
 
-        assert response.status_code == 200, "Status code should be 200 OK"
+    def search_author(self, search_phrase, result_count):
+        url = f"{self.base_url}/api/v2/search/results"
+        data = {
+            "searchPhrase": search_phrase,
+            "resultCount": result_count
+            }
+        response = requests.post(url, headers=self.headers, json=data)
+        return response
 
-    def test_clear_basket(chrome_browser):
-        """Удаление товара из корзины"""
-        url = "https://web-gate.chitai-gorod.ru/api/v1/cart"
-        headers = {
-            "accept": "application/json, text/plain, */*",
-            "accept-language": "ru,ru-RU;q=0.9,en-US;q=0.8,en;q=0.7",
-            "authorization": token,
-            "content-type": "application/json",
-            "origin": "https://www.chitai-gorod.ru",
-            "referer": "https://www.chitai-gorod.ru/"
-        }
+    def add_to_basket(self, product_id, ad_data):
+        url = f"{self.base_url}/api/v1/cart/product"
+        data = {
+            "id": product_id,
+            "adData": ad_data
+            }
+        response = requests.post(url, headers=self.headers, json=data)
+        return response
 
-        response = requests.delete(url, headers=headers)
-
-        assert response.status_code == 204, "Status code should be 204 OK"
+    def clear_basket(self):
+        url = f"{self.base_url}/api/v1/cart"
+        response = requests.delete(url, headers=self.headers)
+        return response
