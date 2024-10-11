@@ -1,166 +1,96 @@
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from Test.configuration import *
-from selenium.webdriver.common.action_chains import ActionChains
-from time import sleep
 import allure
+from selenium.webdriver.common.by import By
+from Pages.page_ui import BookPage
+from Test.configuration import URL_1
 
 
-@allure.step("Полжить книгу в корзину")
+@allure.step("Положить книгу в корзину")
 def test_buy_book(chrome_browser):
-    chrome_browser.get(URL_1)
+    book_page = BookPage(chrome_browser)
+    book_page.driver.get(URL_1)
 
-    chrome_browser.find_element(By.CLASS_NAME, 'header-search__input').send_keys("Пушкин")
+    book_page.search_book("Пушкин")
 
-    chrome_browser.find_element(By.CLASS_NAME, 'header-search__button-icon').click()
+    element = book_page.wait_for_element((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/section[1]/section[1]/div[1]/article[3]/a[1]/picture[1]/img[1]'))
+    book_page.scroll_to_element(element)
+    book_page.click_element(element)
 
-    """Ожидание загрузки элемента""" 
-    element = WebDriverWait(chrome_browser, 10).until( EC.presence_of_element_located((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/section[1]/section[1]/div[1]/article[3]/a[1]/picture[1]/img[1]')) ) 
-    """Скролл к элементу""" 
-    chrome_browser.execute_script("arguments[0].scrollIntoView(true);", element) 
+    book_page.add_book_to_cart()
 
-    """Клик по элементу""" 
-    ActionChains(chrome_browser).move_to_element(element).click(element).perform()
-    sleep(5)
-
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
-    sleep(5)
 
 @allure.step("Проверить товар в корзине")
 def test_buy_book_verify(chrome_browser):
-    chrome_browser.get(URL_1)
-    """Поиск по Фамилии"""
-    chrome_browser.find_element(By.CLASS_NAME, 'header-search__input').send_keys("Пушкин")
+    book_page = BookPage(chrome_browser)
+    book_page.driver.get(URL_1)
 
-    """Клик по лупе"""
-    chrome_browser.find_element(By.CLASS_NAME, 'header-search__button-icon').click()
+    book_page.search_book("Пушкин")
 
-    """Ожидание загрузки элемента """
-    element = WebDriverWait(chrome_browser, 10).until( EC.presence_of_element_located((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/section[1]/section[1]/div[1]/article[3]/a[1]/picture[1]/img[1]')))
+    element = book_page.wait_for_element((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/section[1]/section[1]/div[1]/article[3]/a[1]/picture[1]/img[1]'))
+    book_page.scroll_to_element(element)
+    book_page.click_element(element)
 
-    """Скролл к элементу""" 
-    chrome_browser.execute_script("arguments[0].scrollIntoView(true);", element) 
+    book_page.add_book_to_cart()
 
-    """Клик по элементу""" 
-    ActionChains(chrome_browser).move_to_element(element).click(element).perform()
-    sleep(5)
-
-    """Закинуть в корзину"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
-    sleep(5)
-
-    """Проверить товар в корзине"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
-    sleep(5)
 
 @allure.step("Удаление книги из корзины")
 def test_book_delete(chrome_browser):
-    chrome_browser.get(URL_1)
-    """Поиск по фамилии"""
-    chrome_browser.find_element(By.CLASS_NAME, 'header-search__input').send_keys("Пушкин")
+    book_page = BookPage(chrome_browser)
+    book_page.driver.get(URL_1)
 
-    """Клик по лупе"""
-    chrome_browser.find_element(By.CLASS_NAME, 'header-search__button-icon').click()
+    book_page.search_book("Пушкин")
 
-    """Ожидание загрузки элемента""" 
-    element = WebDriverWait(chrome_browser, 10).until( EC.presence_of_element_located((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/section[1]/section[1]/div[1]/article[3]/a[1]/picture[1]/img[1]')))
+    # Ожидание и клик по элементу (книге)
+    element = book_page.wait_for_element((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/section[1]/section[1]/div[1]/article[3]/a[1]/picture[1]/img[1]'))
+    book_page.scroll_to_element(element)
+    book_page.click_element(element)
 
-    """Скролл к элементу""" 
-    chrome_browser.execute_script("arguments[0].scrollIntoView(true);", element) 
+    # Добавление книги в корзину
+    book_page.add_book_to_cart()
 
-    """Клик по элементу""" 
-    ActionChains(chrome_browser).move_to_element(element).click(element).perform()
-    sleep(5)
+    # Клик по кнопке в шапке страницы для перехода в корзину
+    cart_button = book_page.wait_for_element((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/header[1]/div[1]/div[2]/a[1]/span[2]'))
+    book_page.click_element(cart_button)
 
-    """Закинуть в корзину"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
-    sleep(5)
+    # Удаление книги из корзины
+    book_page.remove_book_from_cart()
 
-    """Проверить товар в корзине"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
-    sleep(5)
-
-    """Удалить из корзины"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/div[2]/span[1]').click()
-    sleep(5)
 
 @allure.step("Восстановление книги в корзине после удаления")
 def test_cart_recovery(chrome_browser):
-    chrome_browser.get(URL_1)
-    """Поиск по фамилии автора"""
-    chrome_browser.find_element(By.CLASS_NAME, 'header-search__input').send_keys("Пушкин")
+    book_page = BookPage(chrome_browser)
+    book_page.driver.get(URL_1)
 
-    """Клик по лупе"""
-    chrome_browser.find_element(By.CLASS_NAME, 'header-search__button-icon').click()
+    book_page.search_book("Пушкин")
 
-    """Ожидание загрузки элемента"""
-    element = WebDriverWait(chrome_browser, 10).until( EC.presence_of_element_located((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/section[1]/section[1]/div[1]/article[3]/a[1]/picture[1]/img[1]')))
+    element = book_page.wait_for_element((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/section[1]/section[1]/div[1]/article[3]/a[1]/picture[1]/img[1]'))
+    book_page.scroll_to_element(element)
+    book_page.click_element(element)
 
-    """Скролл к элементу""" 
-    chrome_browser.execute_script("arguments[0].scrollIntoView(true);", element) 
+    book_page.add_book_to_cart()
 
-    """Клик по элементу""" 
-    ActionChains(chrome_browser).move_to_element(element).click(element).perform()
-    sleep(5)
+    # Клик по кнопке в шапке страницы для перехода в корзину
+    cart_button = book_page.wait_for_element((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/header[1]/div[1]/div[2]/a[1]/span[2]'))
+    book_page.click_element(cart_button)
 
-    """Закинуть в корзину"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
-    sleep(5)
+    book_page.remove_book_from_cart()
+    book_page.restore_cart()
 
-    """Проверить товар в корзине"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
-    sleep(5)
-
-    """Удалить из корзины"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/div[2]/span[1]').click()
-    sleep(5)
-
-    """Востановить корзину"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/section[1]/div[1]/div[2]').click()
-    sleep(5)
 
 @allure.step("Оформление покупки книги")
 def test_book_placing(chrome_browser):
-    chrome_browser.get(URL_1)
-    """Поиск по фамилии автора"""
-    chrome_browser.find_element(By.CLASS_NAME, 'header-search__input').send_keys("Пушкин")
+    book_page = BookPage(chrome_browser)
+    book_page.driver.get(URL_1)
 
-    """Клик по лупе"""
-    chrome_browser.find_element(By.CLASS_NAME, 'header-search__button-icon').click()
+    book_page.search_book("Пушкин")
 
-    """Ожидание загрузки элемента""" 
-    element = WebDriverWait(chrome_browser, 10).until( EC.presence_of_element_located((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/section[1]/section[1]/div[1]/article[3]/a[1]/picture[1]/img[1]')))
+    element = book_page.wait_for_element((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/div[1]/section[1]/section[1]/div[1]/article[3]/a[1]/picture[1]/img[1]'))
+    book_page.scroll_to_element(element)
+    book_page.click_element(element)
 
-    """Скролл к элементу""" 
-    chrome_browser.execute_script("arguments[0].scrollIntoView(true);", element) 
+    book_page.add_book_to_cart()
 
-    """Клик по элементу""" 
-    ActionChains(chrome_browser).move_to_element(element).click(element).perform()
-    sleep(5)
+    # Клик по кнопке в шапке страницы для перехода в корзину
+    cart_button = book_page.wait_for_element((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/header[1]/div[1]/div[2]/a[1]/span[2]'))
+    book_page.click_element(cart_button)
 
-    """Закинуть в корзину"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
-    sleep(5)
-
-    """Проверить товар в корзине"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/main[1]/div[1]/div[6]/div[2]/div[1]/div[1]/div[2]/button[1]/div[1]/div[1]').click()
-    sleep(5)
-
-    """Удалить из корзины"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[2]/div[2]/span[1]').click()
-    sleep(5)
-
-    """Востановить корзину"""
-    chrome_browser.find_element(By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/section[1]/div[1]/div[2]').click()
-    sleep(5)
-
-    """Перейти к оформлению и ожидание загрузки элемента""" 
-    element = WebDriverWait(chrome_browser, 10).until( EC.presence_of_element_located((By.XPATH, '/html[1]/body[1]/div[2]/div[1]/div[1]/div[3]/div[1]/div[3]/div[2]/div[1]/div[2]/section[3]/button[1]')))
-
-    """Скролл к элементу""" 
-    chrome_browser.execute_script("arguments[0].scrollIntoView(true);", element) 
-
-    """Клик по элементу"""
-    ActionChains(chrome_browser).move_to_element(element).click(element).perform()
-    sleep(5)
+    book_page.proceed_to_checkout()
